@@ -6,7 +6,7 @@ Frontend (Giao diện React): Đang chạy tại http://localhost:3000
 Reverse Proxy (Nginx): Đang chạy tại http://localhost
 API Gateway: Đang chạy tại http://localhost:8000
 Các dịch vụ Microservices (Docker):
-postgres (Port 5432 - Database cinema_app với pgvector)
+postgres (Port 5434 trên host, 5432 nội bộ Docker - Database cinema_app với pgvector)
 redis (Port 6379)
 api-gateway (Port 8000)
 auth-service (Port 3001, gRPC 50052)

@@ -251,7 +251,7 @@ Frontend sẽ tự động mở hoặc truy cập trực tiếp tại: **[http:/
 | **Notification Service** | `http://localhost:8080` | `8080` | WebSocket thông báo thời gian thực (`/ws`) |
 | **Analytics Service** | `http://localhost:8087` | `8087` | Báo cáo doanh thu, phân tích dữ liệu |
 | **AI Chatbot Service** | `http://localhost:8089` | `8089` | Trợ lý ảo AI hỏi đáp thông tin rạp phim |
-| **PostgreSQL Database** | `localhost:5432` | `5432` | Database `cinema_app` (User: `postgres`, Pass: `postgres`) |
+| **PostgreSQL Database** | `localhost:5434` (DBeaver) / `postgres:5432` (Docker) | `5434` / `5432` | Database `cinema_app` (User: `postgres`, Pass: `postgres`) |
 | **Redis Cache** | `localhost:6379` | `6379` | Bộ nhớ đệm cache và pub/sub |
 
 ---
