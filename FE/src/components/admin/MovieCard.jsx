@@ -18,7 +18,15 @@ export default function MovieCard({ movie }) {
     return new Date(dateString).toLocaleDateString('vi-VN')
   }
 
+  const getGenreText = () => {
+    if (Array.isArray(movie.genres) && movie.genres.length > 0) {
+      return movie.genres.map((g) => (typeof g === 'string' ? g : g?.name)).filter(Boolean).join(', ')
+    }
+    return movie.genre || ''
+  }
+
   const formatDuration = (minutes) => {
+    if (!minutes) return 'N/A'
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
     return `${hours}h ${mins}m`
@@ -60,8 +68,8 @@ export default function MovieCard({ movie }) {
 
           <div className="truncate">
             <span className="font-medium text-gray-700">Genre:</span>{' '}
-            <span className="truncate" title={movie.genre}>
-              {movie.genres.join(', ') || 'Unknown'}
+            <span className="truncate" title={getGenreText()}>
+              {getGenreText() || 'Unknown'}
             </span>
           </div>
 
