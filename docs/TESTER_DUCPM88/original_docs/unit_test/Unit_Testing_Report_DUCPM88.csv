@@ -1,0 +1,123 @@
+﻿Test Case ID,Phân hệ / Module,File Name,Test Objective (Mục tiêu),Input,Expected Output,Actual Result,Status,Ghi chú / CheckDB & Rollback
+TC-MOVIE-ENTITY-01a,Movie,movie/entity/movie.go,Movie.IsValid() - Phim hợp lệ,"Title=Avengers, Duration=120",true,true,Pass,Đủ Title và Duration > 0
+TC-MOVIE-ENTITY-01b,Movie,movie/entity/movie.go,Movie.IsValid() - Tiêu đề rỗng,"Title="""", Duration=120",false,false,Pass,Title rỗng vi phạm validation
+TC-MOVIE-ENTITY-01c,Movie,movie/entity/movie.go,Movie.IsValid() - Thời lượng = 0,"Title=Test, Duration=0",false,false,Pass,Duration = 0 không hợp lệ
+TC-MOVIE-ENTITY-01d,Movie,movie/entity/movie.go,Movie.IsValid() - Thời lượng âm,"Title=Test, Duration=-1",false,false,Pass,Duration âm không hợp lệ
+TC-MOVIE-ENTITY-01e,Movie,movie/entity/movie.go,Movie.IsValid() - Biên nhỏ nhất hợp lệ,"Title=Test, Duration=1",true,true,Pass,Biên trên sát 0
+TC-MOVIE-ENTITY-01f,Movie,movie/entity/movie.go,Movie.IsValid() - Cả hai vi phạm,"Title="""", Duration=0",false,false,Pass,Cả 2 điều kiện vi phạm
+TC-MOVIE-ENTITY-02a,Movie,movie/entity/movie.go,CanTransitionTo() - UPCOMING -> SHOWING,"current=UPCOMING, next=SHOWING",true,true,Pass,Chuyển trạng thái hợp lệ
+TC-MOVIE-ENTITY-02b,Movie,movie/entity/movie.go,CanTransitionTo() - UPCOMING -> ENDED,"current=UPCOMING, next=ENDED",false,false,Pass,Không cho nhảy cóc qua SHOWING
+TC-MOVIE-ENTITY-02c,Movie,movie/entity/movie.go,CanTransitionTo() - SHOWING -> ENDED,"current=SHOWING, next=ENDED",true,true,Pass,Chuyển trạng thái hợp lệ
+TC-MOVIE-ENTITY-02d,Movie,movie/entity/movie.go,CanTransitionTo() - SHOWING -> UPCOMING,"current=SHOWING, next=UPCOMING",false,false,Pass,Không cho phép lùi trạng thái
+TC-MOVIE-ENTITY-02e,Movie,movie/entity/movie.go,CanTransitionTo() - ENDED -> UPCOMING,"current=ENDED, next=UPCOMING",false,false,Pass,ENDED là trạng thái kết thúc
+TC-MOVIE-ENTITY-02f,Movie,movie/entity/movie.go,CanTransitionTo() - ENDED -> SHOWING,"current=ENDED, next=SHOWING",false,false,Pass,ENDED không thể mở lại
+TC-MOVIE-ENTITY-02g,Movie,movie/entity/movie.go,CanTransitionTo() - UPCOMING -> UPCOMING,"current=UPCOMING, next=UPCOMING",false,false,Pass,Không chuyển sang cùng trạng thái
+TC-MOVIE-ENTITY-02h,Movie,movie/entity/movie.go,CanTransitionTo() - SHOWING -> SHOWING,"current=SHOWING, next=SHOWING",false,false,Pass,Không chuyển sang cùng trạng thái
+TC-MOVIE-ENTITY-02i,Movie,movie/entity/movie.go,CanTransitionTo() - ENDED -> ENDED,"current=ENDED, next=ENDED",false,false,Pass,Không chuyển sang cùng trạng thái
+TC-MOVIE-ENTITY-02j,Movie,movie/entity/movie.go,CanTransitionTo() - next status rỗng,"current=UPCOMING, next=""""",false,false,Pass,Trạng thái rỗng bị từ chối
+TC-MOVIE-ENTITY-02k,Movie,movie/entity/movie.go,CanTransitionTo() - chữ thường showing,"current=UPCOMING, next=showing",false,false,Pass,Enum yêu cầu chữ in hoa
+TC-MOVIE-ENTITY-02l,Movie,movie/entity/movie.go,CanTransitionTo() - status hiện tại không hợp lệ,"current=BOGUS, next=SHOWING",false,false,Pass,Nhánh default bắt giá trị lạ
+TC-MOVIE-ENTITY-03a,Movie,movie/entity/types.go,CreateMovieRequest.ToEntity() - status rỗng,"Title=A, Duration=100, Status=""""",movie.Status = UPCOMING,UPCOMING,Pass,Tự động gán mặc định UPCOMING
+TC-MOVIE-ENTITY-03b,Movie,movie/entity/types.go,CreateMovieRequest.ToEntity() - có status,"Title=A, Duration=100, Status=SHOWING",movie.Status = SHOWING,SHOWING,Pass,Giữ nguyên status được truyền
+TC-MOVIE-ENTITY-03c,Movie,movie/entity/types.go,CreateMovieRequest.ToEntity() - sao chép các trường,"T, D, C, 90, desc, trailer, poster",Các trường được sao chép đầy đủ,Đầy đủ,Pass,Ánh xạ DTO sang Entity
+TC-MOVIE-ENTITY-03d,Movie,movie/entity/types.go,UpdateMovieRequest.ToEntity() - status rỗng,"Title=A, Duration=100, Status=""""","movie.Status = """" (giữ nguyên)","movie.Status = """"",Pass,Update không tự gán UPCOMING
+TC-MOVIE-ENTITY-03e,Movie,movie/entity/types.go,UpdateMovieRequest.ToEntity() - có status,"Title=A, Duration=100, Status=ENDED",movie.Status = ENDED,movie.Status = ENDED,Pass,Sao chép status update
+TC-MOVIE-ENTITY-04a,Movie,movie/entity/types.go,ToMovieResponse() - ánh xạ trường cơ bản,"Movie{Id:m-1, Title:Test, Status:SHOWING}",MovieResponse tương ứng,Khớp dữ liệu,Pass,Ánh xạ Entity sang Response DTO
+TC-MOVIE-ENTITY-04b,Movie,movie/entity/types.go,ToMovieResponse() - ánh xạ danh sách thể loại,"MovieGenres=[Action, Drama]","Genres=[Action, Drama]",Khớp mảng thể loại,Pass,Kiểm tra vòng lặp extract genres
+TC-MOVIE-ENTITY-04c,Movie,movie/entity/types.go,ToMovieResponse() - MovieGenres rỗng,MovieGenres=[],Genres=[] (không nil),Genres=[],Pass,Khởi tạo slice rỗng an toàn
+TC-MOVIE-ENTITY-05a,Movie,movie/entity/types.go,ToMoviesResponse() - chia có dư (25/10),"total=25, size=10",TotalPages = 3,TotalPages = 3,Pass,Ceiling division (25+10-1)/10 = 3
+TC-MOVIE-ENTITY-05b,Movie,movie/entity/types.go,ToMoviesResponse() - total = 0,"total=0, size=10",TotalPages = 1,TotalPages = 1,Pass,Khi không có dữ liệu vẫn có 1 trang
+TC-MOVIE-ENTITY-05c,Movie,movie/entity/types.go,ToMoviesResponse() - chia hết (30/10),"total=30, size=10",TotalPages = 3,TotalPages = 3,Pass,Trang tròn không dư
+TC-MOVIE-ENTITY-05d,Movie,movie/entity/types.go,ToMoviesResponse() - 1 bản ghi (1/10),"total=1, size=10",TotalPages = 1,TotalPages = 1,Pass,Biên nhỏ nhất có dữ liệu
+TC-MOVIE-ENTITY-05e,Movie,movie/entity/types.go,ToMoviesResponse() - vượt 1 bản ghi (11/10),"total=11, size=10",TotalPages = 2,TotalPages = 2,Pass,Sang trang thứ 2
+TC-MOVIE-ENTITY-05f,Movie,movie/entity/types.go,ToMoviesResponse() - danh sách phim,"2 movies, page=1, size=10, total=2","len(Movies)=2, Id khớp",Khớp,Pass,Ánh xạ toàn bộ danh sách
+TC-MOVIE-BIZ-01a,Movie,movie/business/business.go,CreateMovie() - movie = nil,movie = nil,ErrInvalidMovieData,ErrInvalidMovieData,Pass,CheckDB: repo.Create không được gọi
+TC-MOVIE-BIZ-01b,Movie,movie/business/business.go,CreateMovie() - Title rỗng,"movie = {Title: """", Duration: 100}",ErrInvalidMovieData,ErrInvalidMovieData,Pass,CheckDB: r.created == 0
+TC-MOVIE-BIZ-01c,Movie,movie/business/business.go,CreateMovie() - Duration = 0,"movie = {Title: ""A"", Duration: 0}",ErrInvalidMovieData,ErrInvalidMovieData,Pass,CheckDB: r.created == 0
+TC-MOVIE-BIZ-01d,Movie,movie/business/business.go,CreateMovie() - Status rỗng nhận default,"movie = {Title: ""A"", Duration: 100, Status: """"}",movie.Status = UPCOMING,UPCOMING,Pass,"CheckDB: r.created == 1, Mock cache invalidate"
+TC-MOVIE-BIZ-01e,Movie,movie/business/business.go,CreateMovie() - Có status SHOWING,"movie = {Title: ""A"", Duration: 100, Status: SHOWING}",movie.Status = SHOWING,SHOWING,Pass,CheckDB: r.created == 1
+TC-MOVIE-BIZ-01f,Movie,movie/business/business.go,CreateMovie() - Repo trả về lỗi DB,"repo.Create lỗi ""db down""","Bọc lỗi ""failed to create movie: db down""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-MOVIE-BIZ-02a,Movie,movie/business/business.go,UpdateMovie() - movie = nil,movie = nil,ErrInvalidMovieData,ErrInvalidMovieData,Pass,Validation đầu vào
+TC-MOVIE-BIZ-02b,Movie,movie/business/business.go,UpdateMovie() - Id rỗng,"movie = {Id: """", Title: ""A""}",ErrInvalidMovieData,ErrInvalidMovieData,Pass,Id bắt buộc
+TC-MOVIE-BIZ-02c,Movie,movie/business/business.go,UpdateMovie() - Dữ liệu không hợp lệ,"movie = {Id: ""m1"", Title: """", Duration: 1}",ErrInvalidMovieData,ErrInvalidMovieData,Pass,Title không được rỗng
+TC-MOVIE-BIZ-02d,Movie,movie/business/business.go,UpdateMovie() - Phim không tồn tại,repo.GetByID trả về sql.ErrNoRows,ErrMovieNotFound,ErrMovieNotFound,Pass,CheckDB: kiểm tra sự tồn tại trước khi update
+TC-MOVIE-BIZ-02e,Movie,movie/business/business.go,UpdateMovie() - Cùng trạng thái (UPCOMING->UPCOMING),"status cũ = UPCOMING, mới = UPCOMING","Thành công, cập nhật dữ liệu",Thành công,Pass,CheckDB: repo.Update được gọi với Title mới
+TC-MOVIE-BIZ-02f,Movie,movie/business/business.go,UpdateMovie() - Chuyển hợp lệ (UPCOMING->SHOWING),"status cũ = UPCOMING, mới = SHOWING",Thành công,Thành công,Pass,CheckDB: r.updated có status SHOWING
+TC-MOVIE-BIZ-02g,Movie,movie/business/business.go,UpdateMovie() - Chuyển sai (SHOWING->UPCOMING),"status cũ = SHOWING, mới = UPCOMING",ErrInvalidStatusTransition,ErrInvalidStatusTransition,Pass,CheckDB: r.updated == nil (không gọi update)
+TC-MOVIE-BIZ-02h,Movie,movie/business/business.go,UpdateMovie() - Client không truyền status khi update,"status cũ = SHOWING, client gửi Status = """"",Giữ nguyên SHOWING và cập nhật thành công,ErrInvalidStatusTransition,FAIL,"PHÁT HIỆN BUG: code so sánh """" != SHOWING và từ chối cập nhật!"
+TC-MOVIE-BIZ-02i,Movie,movie/business/business.go,UpdateMovie() - Repo update trả về lỗi,"repo.Update lỗi ""db down""","Bọc lỗi ""failed to update movie: db down""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-MOVIE-BIZ-03a,Movie,movie/business/business.go,DeleteMovie() - Id rỗng,"id = """"","Lỗi ""movie id is required""",Đúng lỗi,Pass,Kiểm tra id bắt buộc
+TC-MOVIE-BIZ-03b,Movie,movie/business/business.go,DeleteMovie() - Phim không tồn tại,"id = ""m1"", repo trả về sql.ErrNoRows",ErrMovieNotFound,ErrMovieNotFound,Pass,"CheckDB: r.deleted == """" (không gọi delete)"
+TC-MOVIE-BIZ-03c,Movie,movie/business/business.go,DeleteMovie() - Lỗi ràng buộc khóa ngoại (FK),"repo.Delete lỗi ""fk violation""","Bọc lỗi ""failed to delete movie: fk violation""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-MOVIE-BIZ-03d,Movie,movie/business/business.go,DeleteMovie() - Xóa thành công,"id = ""m1"", phim tồn tại","Thành công, r.deleted = ""m1""",Thành công,Pass,"CheckDB: r.deleted == ""m1"", Mock cache delete"
+TC-MOVIE-BIZ-04a,Movie,movie/business/business.go,UpdateMovieStatus() - Id rỗng,"id = """", status = SHOWING","Lỗi ""movie id is required""",Đúng lỗi,Pass,Validation đầu vào
+TC-MOVIE-BIZ-04b,Movie,movie/business/business.go,UpdateMovieStatus() - Phim không tồn tại,"id = ""m1"", repo trả về sql.ErrNoRows",ErrMovieNotFound,ErrMovieNotFound,Pass,CheckDB: kiểm tra tồn tại
+TC-MOVIE-BIZ-04c,Movie,movie/business/business.go,UpdateMovieStatus() - UPCOMING -> SHOWING,"id = ""m1"", status cũ = UPCOMING, mới = SHOWING","Thành công, r.updated.Status = SHOWING",Thành công,Pass,CheckDB: r.updated.Status == SHOWING
+TC-MOVIE-BIZ-04d,Movie,movie/business/business.go,UpdateMovieStatus() - SHOWING -> UPCOMING,"id = ""m1"", status cũ = SHOWING, mới = UPCOMING",ErrInvalidStatusTransition,ErrInvalidStatusTransition,Pass,CheckDB: r.updated == nil
+TC-MOVIE-BIZ-04e,Movie,movie/business/business.go,UpdateMovieStatus() - UPCOMING -> ENDED,"id = ""m1"", status cũ = UPCOMING, mới = ENDED",ErrInvalidStatusTransition,ErrInvalidStatusTransition,Pass,CheckDB: r.updated == nil
+TC-MOVIE-BIZ-04f,Movie,movie/business/business.go,UpdateMovieStatus() - ENDED -> SHOWING,"id = ""m1"", status cũ = ENDED, mới = SHOWING",ErrInvalidStatusTransition,ErrInvalidStatusTransition,Pass,CheckDB: r.updated == nil
+TC-MOVIE-BIZ-05a,Movie,movie/business/business.go,GetMovieById() - Id rỗng,"id = """"",ErrInvalidMovieData,ErrInvalidMovieData,Pass,CheckDB: không gọi DB
+TC-MOVIE-BIZ-05b,Movie,movie/business/business.go,GetMovieById() - Không tìm thấy,"id = ""x"", sql.ErrNoRows",ErrMovieNotFound,ErrMovieNotFound,Pass,CheckDB: ánh xạ sql.ErrNoRows sang sentinel error
+TC-MOVIE-BIZ-05c,Movie,movie/business/business.go,GetMovieById() - Lấy thành công,"id = ""m1""",Trả về Movie đúng Id,Khớp,Pass,CheckDB: trả về đối tượng movie từ cache/repo
+TC-MOVIE-BIZ-05d,Movie,movie/business/business.go,GetMovieById() - Lỗi DB khác,"repo trả về ""db down""","Bọc lỗi ""failed to get movie: db down""",Đúng lỗi bọc,Pass,Phân biệt lỗi DB với NotFound
+TC-MOVIE-BIZ-06a,Movie,movie/business/business.go,"GetMovies() - page=0, size=0 được chuẩn hóa","page=0, size=0","limit=10, offset=0","limit=10, offset=0",Pass,Chuẩn hóa giá trị mặc định
+TC-MOVIE-BIZ-06b,Movie,movie/business/business.go,GetMovies() - size > 100 bị chặn trần,"page=1, size=500",limit=100,limit=100,Pass,Bảo vệ DB tránh tải quá nặng
+TC-MOVIE-BIZ-06c,Movie,movie/business/business.go,GetMovies() - Tính offset đúng,"page=3, size=10",offset = (3-1)*10 = 20,offset = 20,Pass,Công thức phân trang chính xác
+TC-MOVIE-BIZ-06d,Movie,movie/business/business.go,GetMovies() - Trả về movies và total,"page=1, size=10, search=""a"", status=""SHOWING""","movies danh sách, total=7",Khớp,Pass,CheckDB: GetMany và GetTotalCount được gọi đúng filter
+TC-MOVIE-BIZ-07a,Movie,movie/business/business.go,ValidateMovieForShowtime() - movieId rỗng,"movieId = """"",ErrInvalidMovieData,ErrInvalidMovieData,Pass,Validation đầu vào
+TC-MOVIE-BIZ-07b,Movie,movie/business/business.go,ValidateMovieForShowtime() - Phim không tồn tại,"movieId = ""m1"", không tìm thấy",ErrMovieNotFound,ErrMovieNotFound,Pass,CheckDB: kiểm tra tồn tại
+TC-MOVIE-BIZ-07c,Movie,movie/business/business.go,ValidateMovieForShowtime() - Trạng thái UPCOMING/ENDED,"movieId = ""m1"", status = UPCOMING hoặc ENDED",ErrMovieNotShowing,ErrMovieNotShowing,Pass,Chỉ phim SHOWING mới được tạo suất chiếu
+TC-MOVIE-BIZ-07d,Movie,movie/business/business.go,ValidateMovieForShowtime() - Phim SHOWING hợp lệ,"movieId = ""m1"", status = SHOWING",nil (hợp lệ),nil,Pass,Cho phép tạo suất chiếu
+TC-MOVIE-BIZ-08a,Movie,movie/business/business.go,GetMovieStats() - Lấy thống kê theo trạng thái,ctx,Danh sách []*MovieStat,Khớp,Pass,CheckDB: trả về kết quả thống kê qua cache
+TC-MOVIE-BIZ-08b,Movie,movie/business/business.go,GetGenres() - Lấy danh sách thể loại,ctx,"Danh sách []*Genre có Id=""g1"", Name=""Action""",Khớp,Pass,CheckDB: trả về danh sách thể loại
+TC-SEAT-ENTITY-01a,Seat,seat/entity/seat.go,Seat.IsValid() - Ghế hợp lệ,"RoomId=""r1"", SeatNumber=""01"", RowNumber=""A""",true,true,Pass,Đủ 3 trường bắt buộc
+TC-SEAT-ENTITY-01b,Seat,seat/entity/seat.go,Seat.IsValid() - RoomId rỗng,"RoomId="""", SeatNumber=""01"", RowNumber=""A""",false,false,Pass,Thiếu RoomId
+TC-SEAT-ENTITY-01c,Seat,seat/entity/seat.go,Seat.IsValid() - SeatNumber rỗng,"RoomId=""r1"", SeatNumber="""", RowNumber=""A""",false,false,Pass,Thiếu SeatNumber
+TC-SEAT-ENTITY-01d,Seat,seat/entity/seat.go,Seat.IsValid() - RowNumber rỗng,"RoomId=""r1"", SeatNumber=""01"", RowNumber=""""",false,false,Pass,Thiếu RowNumber
+TC-SEAT-ENTITY-01e,Seat,seat/entity/seat.go,Seat.IsValid() - Ghế rỗng toàn bộ,Seat{},false,false,Pass,Tất cả đều rỗng
+TC-SEAT-ENTITY-02a,Seat,seat/entity/seat.go,GetSeatTypePriceMultiplier() - REGULAR,SeatType = REGULAR,1.0,1.0,Pass,Hệ số ghế thường 1.0x
+TC-SEAT-ENTITY-02b,Seat,seat/entity/seat.go,GetSeatTypePriceMultiplier() - VIP,SeatType = VIP,1.5,1.5,Pass,Hệ số ghế VIP 1.5x
+TC-SEAT-ENTITY-02c,Seat,seat/entity/seat.go,GetSeatTypePriceMultiplier() - COUPLE,SeatType = COUPLE,2.5,2.5,Pass,Hệ số ghế đôi 2.5x
+TC-SEAT-ENTITY-02d,Seat,seat/entity/seat.go,GetSeatTypePriceMultiplier() - UNKNOWN,"SeatType = ""UNKNOWN""",1.0,1.0,Pass,Loại không rõ về 1.0
+TC-SEAT-ENTITY-02e,Seat,seat/entity/seat.go,GetSeatTypePriceMultiplier() - Rỗng,"SeatType = """"",1.0,1.0,Pass,Mặc định về 1.0
+TC-SEAT-ENTITY-03a,Seat,seat/entity/seat.go,Seat.CalculatePrice() - Ghế REGULAR,"basePrice=100000, SeatType=REGULAR",100000,100000,Pass,100.000 * 1.0 = 100.000
+TC-SEAT-ENTITY-03b,Seat,seat/entity/seat.go,Seat.CalculatePrice() - Ghế VIP,"basePrice=100000, SeatType=VIP",150000,150000,Pass,100.000 * 1.5 = 150.000
+TC-SEAT-ENTITY-03c,Seat,seat/entity/seat.go,Seat.CalculatePrice() - Ghế COUPLE,"basePrice=100000, SeatType=COUPLE",250000,250000,Pass,100.000 * 2.5 = 250.000
+TC-SEAT-ENTITY-03d,Seat,seat/entity/seat.go,Seat.CalculatePrice() - Giá gốc = 0,"basePrice=0, SeatType=VIP",0,0,Pass,0 * 1.5 = 0
+TC-SEAT-ENTITY-03e,Seat,seat/entity/seat.go,Seat.CalculatePrice() - Loại không rõ,"basePrice=80000, SeatType=""UNKNOWN""",80000,80000,Pass,80.000 * 1.0 = 80.000
+TC-SEAT-ENTITY-04a,Seat,seat/entity/types.go,CreateSeatRequest.ToSeat() - status mặc định,"RoomId=""r1"", SeatNumber=""01"", RowNumber=""A"", SeatType=VIP",seat.Status = AVAILABLE,AVAILABLE,Pass,Tự động gán AVAILABLE
+TC-SEAT-ENTITY-04b,Seat,seat/entity/types.go,CreateSeatRequest.ToSeat() - sao chép các trường,"r1, 01, A, VIP",Các trường được sao chép đầy đủ,Đầy đủ,Pass,Ánh xạ DTO sang Entity
+TC-SEAT-ENTITY-05a,Seat,seat/entity/types.go,ToSeatResponse() - ánh xạ trường,"Seat{Id:""s-1"", SeatType:COUPLE, Status:MAINTENANCE}",SeatResponse tương ứng,Khớp dữ liệu,Pass,Ánh xạ Entity sang Response DTO
+TC-SEAT-ENTITY-05b,Seat,seat/entity/types.go,ToSeatResponse() - đầu vào nil,nil,nil,nil,Pass,Xử lý con trỏ nil an toàn
+TC-SEAT-ENTITY-06a,Seat,seat/entity/types.go,ToSeatsResponse() - danh sách 2 ghế,"2 seats, page=1, size=10, total=2","len(Data)=2, Paging != nil",Khớp,Pass,Ánh xạ mảng dữ liệu
+TC-SEAT-ENTITY-06b,Seat,seat/entity/types.go,ToSeatsResponse() - tính phân trang,"nil, page=2, size=50, total=120","TotalPages=3, Page=2","TotalPages=3, Page=2",Pass,Phân trang (120/50 làm tròn lên = 3)
+TC-SEAT-BIZ-01a,Seat,seat/business/business.go,CreateSeat() - seat = nil,seat = nil,ErrInvalidSeatData,ErrInvalidSeatData,Pass,CheckDB: repo.Create không được gọi
+TC-SEAT-BIZ-01b,Seat,seat/business/business.go,CreateSeat() - SeatNumber rỗng,"seat = {RoomId: ""r1"", RowNumber: ""A"", SeatNumber: """"}",ErrInvalidSeatData,ErrInvalidSeatData,Pass,CheckDB: r.created == nil
+TC-SEAT-BIZ-01c,Seat,seat/business/business.go,CreateSeat() - Trùng vị trí ghế trong phòng,exists = true từ repo.ExistsBySeatPosition,ErrSeatPositionExists,ErrSeatPositionExists,Pass,CheckDB: r.created == nil (không insert)
+TC-SEAT-BIZ-01d,Seat,seat/business/business.go,CreateSeat() - Repo kiểm tra vị trí báo lỗi DB,"existsErr = ""db""","Bọc lỗi ""failed to check seat position: db""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-SEAT-BIZ-01e,Seat,seat/business/business.go,CreateSeat() - Lỗi vi phạm khóa ngoại (FK room),"createErr = ""fk room""","Bọc lỗi ""failed to create seat: fk room""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-SEAT-BIZ-01f,Seat,seat/business/business.go,CreateSeat() - Tạo ghế thành công,"seat hợp lệ, vị trí chưa có","Thành công, r.created != nil",Thành công,Pass,"CheckDB: r.created != nil, Mock cache invalidate"
+TC-SEAT-BIZ-01g,Seat,seat/business/business.go,CreateSeat() - SeatType không thuộc enum,"SeatType = ""BOGUS""",Từ chối và trả về ErrInvalidSeatData,"Lưu ""BOGUS"" vào DB!",FAIL,PHÁT HIỆN BUG: code không kiểm tra giá trị SeatType hợp lệ!
+TC-SEAT-BIZ-02a,Seat,seat/business/business.go,UpdateSeat() - Ghế không tồn tại,"id = ""s1"", sql.ErrNoRows",ErrSeatNotFound,ErrSeatNotFound,Pass,CheckDB: kiểm tra tồn tại
+TC-SEAT-BIZ-02b,Seat,seat/business/business.go,UpdateSeat() - Đổi SeatNumber loại trừ chính nó,"updates.SeatNumber = ""Z2""","Thành công, excludeId = ""s1""",Thành công,Pass,"CheckDB: ExistsBySeatPosition truyền excludeId=""s1"""
+TC-SEAT-BIZ-02c,Seat,seat/business/business.go,UpdateSeat() - Đổi RowNumber trùng vị trí ghế khác,"updates.RowNumber = ""B"", exists = true",ErrSeatPositionExists,ErrSeatPositionExists,Pass,CheckDB: r.updated == nil
+TC-SEAT-BIZ-02d,Seat,seat/business/business.go,UpdateSeat() - Đổi SeatNumber thành rỗng,"updates.SeatNumber = """"",ErrInvalidSeatData,ErrInvalidSeatData,Pass,CheckDB: r.updated == nil
+TC-SEAT-BIZ-02e,Seat,seat/business/business.go,UpdateSeat() - Chỉ đổi SeatType và Status,"updates.SeatType = VIP, Status = MAINTENANCE","Thành công, không gọi ExistsBySeatPosition",Thành công,Pass,Tối ưu hóa: không query kiểm tra vị trí khi không đổi số ghế/hàng
+TC-SEAT-BIZ-02f,Seat,seat/business/business.go,UpdateSeat() - Repo update trả về lỗi,"updateErr = ""db""","Bọc lỗi ""failed to update seat: db""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-SEAT-BIZ-03a,Seat,seat/business/business.go,DeleteSeat() - Ghế không tồn tại,"id = ""s1"", sql.ErrNoRows",ErrSeatNotFound,ErrSeatNotFound,Pass,CheckDB: kiểm tra tồn tại
+TC-SEAT-BIZ-03b,Seat,seat/business/business.go,DeleteSeat() - Xóa thành công,"id = ""s1"", ghế tồn tại","Thành công, r.deleted = ""s1""",Thành công,Pass,"CheckDB: r.deleted == ""s1"", Mock cache delete"
+TC-SEAT-BIZ-03c,Seat,seat/business/business.go,DeleteSeat() - Lỗi ràng buộc khóa ngoại (đã có booking),"deleteErr = ""fk booking""","Bọc lỗi ""failed to delete seat: fk booking""",Đúng lỗi bọc,Pass,CheckDB: xử lý lỗi DB graceful
+TC-SEAT-BIZ-04a,Seat,seat/business/business.go,UpdateSeatStatus() - Ghế không tồn tại,"id = ""s1"", sql.ErrNoRows",ErrSeatNotFound,ErrSeatNotFound,Pass,CheckDB: kiểm tra tồn tại
+TC-SEAT-BIZ-04b,Seat,seat/business/business.go,UpdateSeatStatus() - AVAILABLE -> MAINTENANCE,"id = ""s1"", status = MAINTENANCE","Thành công, r.updated.Status = MAINTENANCE",Thành công,Pass,CheckDB: r.updated.Status == MAINTENANCE
+TC-SEAT-BIZ-04c,Seat,seat/business/business.go,UpdateSeatStatus() - Status lạ không thuộc enum,"id = ""s1"", status = ""FOO""",Từ chối và trả về ErrInvalidStatusTransition,"Lưu ""FOO"" vào DB!",FAIL,PHÁT HIỆN BUG: code không kiểm tra giá trị SeatStatus hợp lệ!
+TC-SEAT-BIZ-05a,Seat,seat/business/business.go,GetSeats() - page < 1 hoặc size < 1,"page=0, size=10 hoặc page=1, size=0",ErrInvalidSeatData,ErrInvalidSeatData,Pass,Validation phân trang
+TC-SEAT-BIZ-05b,Seat,seat/business/business.go,GetSeats() - Lấy danh sách thành công,"page=2, size=50, roomId=""r1""","seats danh sách, total=1, offset=50",Khớp,Pass,CheckDB: offset = (2-1)*50 = 50
+TC-SEAT-BIZ-05c,Seat,seat/business/business.go,GetSeatById() - Không tìm thấy,"id = ""x"", sql.ErrNoRows",ErrSeatNotFound,ErrSeatNotFound,Pass,CheckDB: ánh xạ sql.ErrNoRows
+TC-SEAT-BIZ-05d,Seat,seat/business/business.go,GetSeatById() - Lấy thành công,"id = ""s1""",Trả về Seat đúng Id,Khớp,Pass,CheckDB: trả về đối tượng seat từ cache/repo
+TC-PAGING-01a,Paging,pkg/paging/paging.go,NewPageInfo() - chia có dư (25/10),"page=1, size=10, total=25","TotalPages=3, Page=1, Size=10, Total=25",TotalPages=3,Pass,Ceiling division: 25/10 -> 3 trang
+TC-PAGING-01b,Paging,pkg/paging/paging.go,NewPageInfo() - chia hết (20/10),"page=1, size=10, total=20","TotalPages=2, Page=1, Size=10, Total=20",TotalPages=2,Pass,Trang tròn: 20/10 -> 2 trang
+TC-PAGING-01c,Paging,pkg/paging/paging.go,NewPageInfo() - total = 0,"page=1, size=10, total=0","TotalPages=0, Page=1, Size=10, Total=0",TotalPages=0,Pass,Khi không có dữ liệu: 0 trang
+TC-PAGING-01d,Paging,pkg/paging/paging.go,NewPageInfo() - 1 bản ghi (1/10),"page=1, size=10, total=1","TotalPages=1, Page=1, Size=10, Total=1",TotalPages=1,Pass,Biên nhỏ nhất: 1 trang
+TC-PAGING-01e,Paging,pkg/paging/paging.go,NewPageInfo() - vượt 1 bản ghi (11/10),"page=1, size=10, total=11","TotalPages=2, Page=1, Size=10, Total=11",TotalPages=2,Pass,Vừa sang trang thứ 2
+TC-PAGING-02a,Paging,pkg/paging/paging.go,stringToInt() - chuỗi số hợp lệ,"""7""",7,7,Pass,Parse số nguyên thành công
+TC-PAGING-02b,Paging,pkg/paging/paging.go,stringToInt() - chuỗi ký tự lỗi,"""abc""",0 (giá trị mặc định khi parse lỗi),0,Pass,Xử lý lỗi parse an toàn
