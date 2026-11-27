@@ -97,9 +97,9 @@ Quy trình thiết kế test case tuân thủ nghiêm ngặt **Mục 5.3 của t
 - **Expected Output:** Xác định căn cứ vào tài liệu thiết kế và đặc tả nghiệp vụ phần mềm (không căn cứ mù quáng vào lỗi có sẵn trong mã nguồn). Nhờ đó, Unit Test đã phát hiện ra các lỗi logic thực tế trong mã nguồn.
 - **Cấu trúc script:** Khai báo biến input/expected -> Gọi method cần test -> Kiểm tra kết quả trả về -> Xác minh tác động trạng thái (CheckDB qua FakeRepo) -> Đảm bảo Rollback dữ liệu.
 
-Tổng cộng đã xây dựng và thực thi **114 Test Cases** (Movie: 63 TCs, Seat: 44 TCs, Paging: 7 TCs). Toàn bộ được tổ chức trong file Excel [`Unit_Testing_Report_DUCPM88.xlsx`](file:///d:/TÀI%20LIỆU%20WORD%20EXCEL/ĐẢM%20BẢO%20CHẤT%20LƯỢNG%20PHẦN%20MỀM/cinema-project-main/docs/TESTER_DUCPM88/original_docs/unit_test/Unit_Testing_Report_DUCPM88.xlsx). Dưới đây là bảng chi tiết:
+Tổng cộng đã xây dựng và thực thi **122 Test Cases** (Movie: 71 TCs, Seat: 44 TCs, Paging: 7 TCs). Toàn bộ được tổ chức trong file Excel [`Unit_Testing_Report_DUCPM88.xlsx`](file:///d:/TÀI%20LIỆU%20WORD%20EXCEL/ĐẢM%20BẢO%20CHẤT%20LƯỢNG%20PHẦN%20MỀM/cinema-project-main/docs/TESTER_DUCPM88/original_docs/unit_test/Unit_Testing_Report_DUCPM88.xlsx). Dưới đây là bảng chi tiết:
 
-#### A. Phân hệ Movie Management (63 Test Cases)
+#### A. Phân hệ Movie Management (71 Test Cases)
 
 | Test Case ID | Class / File Name | Test Objective (Mục tiêu kiểm thử) | Input (Dữ liệu đầu vào) | Expected Output | Actual Result | Status | Notes / CheckDB & Rollback |
 |---|---|---|---|---|---|:---:|---|
@@ -260,11 +260,11 @@ Tổng cộng đã xây dựng và thực thi **114 Test Cases** (Movie: 63 TCs,
 | Nhóm kiểm thử (Test Suite) | Tổng số Test Case | Passed | Failed | Tỷ lệ Pass (%) | Trạng thái phát hiện lỗi |
 |---|---:|---:|---:|---:|---|
 | **Movie Management — Entity Layer** | 32 | 32 | 0 | 100.0% | Pass 100% |
-| **Movie Management — Business Layer** | 31 | 30 | 1 | 96.77% | **Phát hiện 1 Bug nghiệp vụ (`TC-MOVIE-BIZ-02h`)** |
+| **Movie Management — Business Layer** | 39 | 38 | 1 | 97.44% | **Phát hiện 1 Bug nghiệp vụ (`TC-MOVIE-BIZ-02h`)** |
 | **Seat Management — Entity Layer** | 21 | 21 | 0 | 100.0% | Pass 100% |
 | **Seat Management — Business Layer** | 23 | 21 | 2 | 91.30% | **Phát hiện 2 Bug nghiệp vụ (`TC-SEAT-BIZ-01g`, `04c`)** |
 | **Paging Helper Package** | 7 | 7 | 0 | 100.0% | Pass 100% |
-| **TỔNG CỘNG PHẠM VI TEST** | **114** | **111** | **3** | **97.37%** | **Phát hiện 3 lỗi nghiệp vụ thực tế!** |
+| **TỔNG CỘNG PHẠM VI TEST** | **122** | **119** | **3** | **97.54%** | **Phát hiện 3 lỗi nghiệp vụ thực tế!** |
 
 #### Minh chứng chi tiết các lỗi nghiệp vụ phát hiện qua Unit Test:
 1. **Lỗi `TC-MOVIE-BIZ-02h` (`UpdateMovie`):**
@@ -283,7 +283,7 @@ Tổng cộng đã xây dựng và thực thi **114 Test Cases** (Movie: 63 TCs,
 
 Độ phủ mã nguồn được đo lường bằng công cụ chuẩn của Golang:
 ```bash
-go test -count=1 -coverprofile=coverage.out ./internal/module/movie/... ./internal/module/seat/... ./internal/pkg/paging/...
+go test -count=1 -coverprofile=coverage.out -covermode=atomic ./internal/module/movie/entity/... ./internal/module/movie/business/... ./internal/module/seat/entity/... ./internal/module/seat/business/... ./internal/pkg/paging/...
 go tool cover -func=coverage.out
 ```
 
@@ -291,16 +291,18 @@ go tool cover -func=coverage.out
 
 | Gói mã nguồn (Package) | Tệp tin (File) | Statements Tested | Branch Coverage | Tỷ lệ phủ (Coverage %) |
 |---|---|:---:|:---:|:---:|
-| `internal/module/movie/entity` | `movie.go` | 12/12 | 100% | **100.0%** |
-| `internal/module/movie/entity` | `types.go` | 42/42 | 100% | **100.0%** |
-| `internal/module/movie/business` | `business.go` | 108/122 | 92.5% | **88.5%** |
-| `internal/module/seat/entity` | `seat.go` | 14/14 | 100% | **100.0%** |
-| `internal/module/seat/entity` | `types.go` | 26/26 | 100% | **100.0%** |
-| `internal/module/seat/business` | `business.go` | 94/110 | 88.0% | **85.5%** |
-| `internal/pkg/paging` | `paging.go` | 15/15 | 100% | **100.0%** |
-| **TRUNG BÌNH CHUNG TOÀN BỘ PHẠM VI** | **Tất cả các file trong phạm vi** | **311/341** | **94.2%** | **91.2%** |
+| `internal/module/movie/entity` | `movie.go` | 7/7 | N/A | **100.0%** |
+| `internal/module/movie/entity` | `types.go` | 20/20 | N/A | **100.0%** |
+| `internal/module/movie/business` | `business.go` | 102/120 | N/A | **85.0%** |
+| `internal/module/seat/entity` | `seat.go` | 9/9 | N/A | **100.0%** |
+| `internal/module/seat/entity` | `types.go` | 12/12 | N/A | **100.0%** |
+| `internal/module/seat/business` | `business.go` | 82/138 | N/A | **59.4%** |
+| `internal/pkg/paging` | `paging.go` | 8/11 | N/A | **72.7%** |
+| **TỔNG THEO `go tool cover -func`** | **7 file trên + 2 file `const.go` (5/5 statements)** | **245/322** | **N/A** | **76.1%** |
 
-> **Nhận xét độ phủ:** Mức độ phủ mã nguồn đạt **91.2%**, vượt xa tiêu chuẩn ngành (thường là 75-80%). Toàn bộ các nhánh rẽ logic (`if/else`, kiểm tra giá trị biên, giá trị null, xử lý ngoại lệ database) đều được kích hoạt và kiểm thử đầy đủ.
+> *Branch Coverage: N/A — công cụ `go tool cover` chỉ đo độ phủ câu lệnh (statement coverage), không xuất số liệu độ phủ nhánh.*
+
+> **Nhận xét độ phủ:** Độ phủ câu lệnh tổng thể đạt **76.1%** (245/322 statements). Theo package: `movie/entity` 100%, `seat/entity` 100%, `movie/business` 85.4%, `seat/business` 60.0%, `paging` 72.7%. Các phần chưa được phủ: `NewBusiness` của movie và seat (0%), `GetLockedSeatsByShowtime`, `getConcurrentLockedSeatsByShowtime`, `getBookedSeatsByShowtime` của seat (0%), `GetQueryPaging` của paging (0%), cùng một số nhánh lỗi trong `GetMovies`, `GetGenres`, `GetMovieStats`, `UpdateMovieStatus`, `GetSeats`, `UpdateSeat`, `UpdateSeatStatus`.
 
 ---
 

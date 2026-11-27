@@ -148,7 +148,11 @@ echo.
 echo ================================================================
 echo   TONG KET UNIT TEST VA COVERAGE REPORT
 echo ================================================================
-echo   1. Ket qua unit test: PASSED
+if %TEST_EXIT_CODE% == 0 (
+    echo   1. Ket qua unit test: PASSED - Tat ca test cases deu PASS
+) else (
+    echo   1. Ket qua unit test: FAILED - Co test case bi FAIL, xem chi tiet o STEP 3/5
+)
 echo   2. File du lieu do phu: %MOVIE_SERVICE%\coverage.out
 echo   3. Giao dien web HTML:  %UNIT_TEST_DIR%\coverage.html
 echo.

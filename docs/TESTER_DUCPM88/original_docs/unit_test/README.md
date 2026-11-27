@@ -11,7 +11,7 @@ Thư mục này chứa đầy đủ tài liệu, báo cáo Excel, và các scrip
    - Bảng tính Excel hoàn chỉnh gồm 5 sheets:
      - `1. Scope & Overview`: Tổng quan công cụ, phạm vi, kết quả và độ phủ.
      - `2. Excluded Files`: Danh sách các file không cần Unit test kèm giải thích kỹ thuật (1.2).
-     - `3. Movie Management (63 TCs)`: Toàn bộ test case cho Movie (Entity + Business).
+     - `3. Movie Management (71 TCs)`: Toàn bộ test case cho Movie (Entity + Business).
      - `4. Seat Management (44 TCs)`: Toàn bộ test case cho Seat (Entity + Business).
      - `5. Paging Helper (7 TCs)`: Test case cho package phân trang dùng chung.
 
